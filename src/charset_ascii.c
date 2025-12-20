@@ -80,14 +80,14 @@ bool ascii_is_printable(ascii const c)
    return ascii_is_graphical(c) || c == ' '; 
 }
 
-bool ascii_is_whitespace(ascii const c)
+bool ascii_is_blank(ascii const c)
 {
    return c == ' ' || c == '\t';
 }
 
-bool ascii_is_horizontal_whitespace(ascii const c)
+bool ascii_is_whitespace(ascii const c)
 {
-   return ascii_is_whitespace(c) || is_in_range(c, '\n', '\r'); // \t' ' + \n\v\f\r
+   return ascii_is_blank(c) || is_in_range(c, '\n', '\r'); // \t' ' + \n\v\f\r
 }
 
 bool ascii_is_control(ascii const c)
@@ -96,33 +96,55 @@ bool ascii_is_control(ascii const c)
 }
 
 
+ascii ascii_to_lower(ascii const c)
+{
+   return ascii_is_upper(c) ? (c + 32) : (c); // 32: 'a' - 'A' in ascii table.
+}
+
+ascii ascii_to_upper(ascii const c)
+{
+   return ascii_is_lower(c) ? (c - 32) : (c); // 32: 'a' - 'A' in ascii table.
+}
+
 //------------------------------------------------------------------------------------------------
 // Character sequence functions
 //------------------------------------------------------------------------------------------------
 
-size_t ascii_seq_count(ascii const *str)
+bool ascii_seq_is_valid(ascii const *seq)
 {
-   ascii const *const begin = str;
-
-   while (*str != '\0')
+   while (*seq != '\0')
    {
-      str += 1;
+      if (!ascii_is_valid(*seq++))
+      {
+         return false;
+      }
    }
-
-   return str - begin;
+   return true;
 }
 
-size_t ascii_seq_ncount(ascii const *str, size_t const max)
+size_t ascii_seq_count(ascii const *seq)
 {
-   ascii const *const begin = str;
-   ascii const *const end   = begin + max;
+   ascii const *const begin = seq;
 
-   while (*str != '\0' && str < end)
+   while (*seq != '\0')
    {
-      str += 1;
+      seq += 1;
    }
 
-   return str - begin;
+   return seq - begin;
+}
+
+size_t ascii_seq_ncount(ascii const *seq, size_t const max)
+{
+   ascii const *const begin = seq;
+   ascii const *const end   = begin + max;
+
+   while (*seq != '\0' && seq < end)
+   {
+      seq += 1;
+   }
+
+   return seq - begin;
 }
 
 

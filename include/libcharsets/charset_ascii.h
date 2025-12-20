@@ -39,15 +39,19 @@ typedef char ascii;
 [[nodiscard]] bool ascii_is_punctuation(ascii c);  // !"#$%&'()*+,\-./:;<=>?@\[\\\]^_`{|}~
 [[nodiscard]] bool ascii_is_graphical(ascii c);    // Punctuation or Alphanumeric
 [[nodiscard]] bool ascii_is_printable(ascii c);    // Graphical or space character
-[[nodiscard]] bool ascii_is_whitespace(ascii c);   // space or tab
-[[nodiscard]] bool ascii_is_horizontal_whitespace(ascii c);
+[[nodiscard]] bool ascii_is_blank(ascii c);        // space or tab
+[[nodiscard]] bool ascii_is_whitespace(ascii c);   // Blank or \f\n\r\v.
 [[nodiscard]] bool ascii_is_control(ascii c);
+
+[[nodiscard]] ascii ascii_to_lower(ascii c);
+[[nodiscard]] ascii ascii_to_upper(ascii c);
 
 
 //------------------------------------------------------------------------------------------------
 // Character sequence functions
 //------------------------------------------------------------------------------------------------
 
+// Returns true if all characters are valid ASCII. False otherwise.
 [[nodiscard]] __attribute__((nonnull (1)))
 bool ascii_seq_is_valid(ascii const *seq);
 

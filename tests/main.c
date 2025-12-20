@@ -23,15 +23,15 @@ struct AsciiCharTest
    bool isPunct;
    bool isGraph;
    bool isPrint;
+   bool isBlank;
    bool isWhitespace;
-   bool isHorizWhitespace;
    bool isCtrl;
 };
 typedef struct AsciiCharTest AsciiCharTest;
 
 // Perhaps a bit radical, but at least everything will be tested.
 static constexpr AsciiCharTest asciiChars[] = {
-//  Idx       Char  Valid Digit  Bin    Hex    Oct    Lower  Upper  Alpha  Alnum  Punct  Graph  Print  Space  HSpace Ctrl
+//  Idx       Char  Valid Digit  Bin    Hex    Oct    Lower  Upper  Alpha  Alnum  Punct  Graph  Print  Blank  WSpace Ctrl
    [0x00] = { '\0', true, false, false, false, false, false, false, false, false, false, false, false, false, false,  true },
    [0x01] = { 0x01, true, false, false, false, false, false, false, false, false, false, false, false, false, false,  true },
    [0x02] = { 0x02, true, false, false, false, false, false, false, false, false, false, false, false, false, false,  true },
@@ -48,7 +48,7 @@ static constexpr AsciiCharTest asciiChars[] = {
    [0x0D] = { '\r', true, false, false, false, false, false, false, false, false, false, false, false, false,  true,  true },
    [0x0E] = { 0x0E, true, false, false, false, false, false, false, false, false, false, false, false, false, false,  true },
    [0x0F] = { 0x0F, true, false, false, false, false, false, false, false, false, false, false, false, false, false,  true },
-//  Idx       Char  Valid Digit  Bin    Hex    Oct    Lower  Upper  Alpha  Alnum  Punct  Graph  Print  Space  HSpace Ctrl
+//  Idx       Char  Valid Digit  Bin    Hex    Oct    Lower  Upper  Alpha  Alnum  Punct  Graph  Print  Blank  WSpace Ctrl
    [0x10] = { 0x10, true, false, false, false, false, false, false, false, false, false, false, false, false, false,  true },
    [0x11] = { 0x11, true, false, false, false, false, false, false, false, false, false, false, false, false, false,  true },
    [0x12] = { 0x12, true, false, false, false, false, false, false, false, false, false, false, false, false, false,  true },
@@ -65,7 +65,7 @@ static constexpr AsciiCharTest asciiChars[] = {
    [0x1D] = { 0x1D, true, false, false, false, false, false, false, false, false, false, false, false, false, false,  true },
    [0x1E] = { 0x1E, true, false, false, false, false, false, false, false, false, false, false, false, false, false,  true },
    [0x1F] = { 0x1F, true, false, false, false, false, false, false, false, false, false, false, false, false, false,  true },
-//  Idx       Char  Valid Digit  Bin    Hex    Oct    Lower  Upper  Alpha  Alnum  Punct  Graph  Print  Space  HSpace Ctrl
+//  Idx       Char  Valid Digit  Bin    Hex    Oct    Lower  Upper  Alpha  Alnum  Punct  Graph  Print  Blank  WSpace Ctrl
    [0x20] = {  ' ', true, false, false, false, false, false, false, false, false, false, false,  true,  true,  true, false },
    [0x21] = {  '!', true, false, false, false, false, false, false, false, false,  true,  true,  true, false, false, false },
    [0x22] = {  '"', true, false, false, false, false, false, false, false, false,  true,  true,  true, false, false, false },
@@ -82,7 +82,7 @@ static constexpr AsciiCharTest asciiChars[] = {
    [0x2D] = {  '-', true, false, false, false, false, false, false, false, false,  true,  true,  true, false, false, false },
    [0x2E] = {  '.', true, false, false, false, false, false, false, false, false,  true,  true,  true, false, false, false },
    [0x2F] = {  '/', true, false, false, false, false, false, false, false, false,  true,  true,  true, false, false, false },
-//  Idx       Char  Valid Digit  Bin    Hex    Oct    Lower  Upper  Alpha  Alnum  Punct  Graph  Print  Space  HSpace Ctrl
+//  Idx       Char  Valid Digit  Bin    Hex    Oct    Lower  Upper  Alpha  Alnum  Punct  Graph  Print  Blank  WSpace Ctrl
    [0x30] = {  '0', true,  true,  true,  true,  true, false, false, false,  true, false,  true,  true, false, false, false },
    [0x31] = {  '1', true,  true,  true,  true,  true, false, false, false,  true, false,  true,  true, false, false, false },
    [0x32] = {  '2', true,  true, false,  true,  true, false, false, false,  true, false,  true,  true, false, false, false },
@@ -99,7 +99,7 @@ static constexpr AsciiCharTest asciiChars[] = {
    [0x3D] = {  '=', true, false, false, false, false, false, false, false, false,  true,  true,  true, false, false, false },
    [0x3E] = {  '>', true, false, false, false, false, false, false, false, false,  true,  true,  true, false, false, false },
    [0x3F] = {  '?', true, false, false, false, false, false, false, false, false,  true,  true,  true, false, false, false },
-//  Idx       Char  Valid Digit  Bin    Hex    Oct    Lower  Upper  Alpha  Alnum  Punct  Graph  Print  Space  HSpace Ctrl
+//  Idx       Char  Valid Digit  Bin    Hex    Oct    Lower  Upper  Alpha  Alnum  Punct  Graph  Print  Blank  WSpace Ctrl
    [0x40] = {  '@', true, false, false, false, false, false, false, false, false,  true,  true,  true, false, false, false },
    [0x41] = {  'A', true, false, false,  true, false, false,  true,  true,  true, false,  true,  true, false, false, false },
    [0x42] = {  'B', true, false, false,  true, false, false,  true,  true,  true, false,  true,  true, false, false, false },
@@ -116,7 +116,7 @@ static constexpr AsciiCharTest asciiChars[] = {
    [0x4D] = {  'M', true, false, false, false, false, false,  true,  true,  true, false,  true,  true, false, false, false },
    [0x4E] = {  'N', true, false, false, false, false, false,  true,  true,  true, false,  true,  true, false, false, false },
    [0x4F] = {  'O', true, false, false, false, false, false,  true,  true,  true, false,  true,  true, false, false, false },
-//  Idx       Char  Valid Digit  Bin    Hex    Oct    Lower  Upper  Alpha  Alnum  Punct  Graph  Print  Space  HSpace Ctrl
+//  Idx       Char  Valid Digit  Bin    Hex    Oct    Lower  Upper  Alpha  Alnum  Punct  Graph  Print  Blank  WSpace Ctrl
    [0x50] = {  'P', true, false, false, false, false, false,  true,  true,  true, false,  true,  true, false, false, false },
    [0x51] = {  'Q', true, false, false, false, false, false,  true,  true,  true, false,  true,  true, false, false, false },
    [0x52] = {  'R', true, false, false, false, false, false,  true,  true,  true, false,  true,  true, false, false, false },
@@ -133,7 +133,7 @@ static constexpr AsciiCharTest asciiChars[] = {
    [0x5D] = {  ']', true, false, false, false, false, false, false, false, false,  true,  true,  true, false, false, false },
    [0x5E] = {  '^', true, false, false, false, false, false, false, false, false,  true,  true,  true, false, false, false },
    [0x5F] = {  '_', true, false, false, false, false, false, false, false, false,  true,  true,  true, false, false, false },
-//  Idx       Char  Valid Digit  Bin    Hex    Oct    Lower  Upper  Alpha  Alnum  Punct  Graph  Print  Space  HSpace Ctrl
+//  Idx       Char  Valid Digit  Bin    Hex    Oct    Lower  Upper  Alpha  Alnum  Punct  Graph  Print  Blank  WSpace Ctrl
    [0x60] = {  '`', true, false, false, false, false, false, false, false, false,  true,  true,  true, false, false, false },
    [0x61] = {  'a', true, false, false,  true, false,  true, false,  true,  true, false,  true,  true, false, false, false },
    [0x62] = {  'b', true, false, false,  true, false,  true, false,  true,  true, false,  true,  true, false, false, false },
@@ -150,7 +150,7 @@ static constexpr AsciiCharTest asciiChars[] = {
    [0x6D] = {  'm', true, false, false, false, false,  true, false,  true,  true, false,  true,  true, false, false, false },
    [0x6E] = {  'n', true, false, false, false, false,  true, false,  true,  true, false,  true,  true, false, false, false },
    [0x6F] = {  'o', true, false, false, false, false,  true, false,  true,  true, false,  true,  true, false, false, false },
-//  Idx       Char  Valid Digit  Bin    Hex    Oct    Lower  Upper  Alpha  Alnum  Punct  Graph  Print  Space  HSpace Ctrl
+//  Idx       Char  Valid Digit  Bin    Hex    Oct    Lower  Upper  Alpha  Alnum  Punct  Graph  Print  Blank  WSpace Ctrl
    [0x70] = {  'p', true, false, false, false, false,  true, false,  true,  true, false,  true,  true, false, false, false },
    [0x71] = {  'q', true, false, false, false, false,  true, false,  true,  true, false,  true,  true, false, false, false },
    [0x72] = {  'r', true, false, false, false, false,  true, false,  true,  true, false,  true,  true, false, false, false },
@@ -189,8 +189,8 @@ static void test_suite_ascii_characters(void)
       assert(ascii_is_punctuation(c) == charTest->isPunct);
       assert(ascii_is_graphical(c) == charTest->isGraph);
       assert(ascii_is_printable(c) == charTest->isPrint);
+      assert(ascii_is_blank(c) == charTest->isBlank);
       assert(ascii_is_whitespace(c) == charTest->isWhitespace);
-      assert(ascii_is_horizontal_whitespace(c) == charTest->isHorizWhitespace);
       assert(ascii_is_control(c) == charTest->isCtrl);
    }
 }
