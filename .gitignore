@@ -64,3 +64,6 @@ build
 
 # Binary
 libcharsets.a
+
+# Test executable
+test

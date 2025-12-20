@@ -11,12 +11,12 @@
 // utf16 -> utf16_[...]
 
 
-#define charset_count(str)          \
-   _Generic((str),                  \
-      ascii const *: ascii_count,   \
+#define charset_seq_count(str)          \
+   _Generic((str),                      \
+      ascii const *: ascii_seq_count,   \
    )(str)
 
-#define charset_ncount(str)         \
-   _Generic((str),                  \
-      ascii const *: ascii_ncount,  \
+#define charset_seq_ncount(str)         \
+   _Generic((str),                      \
+      ascii const *: ascii_seq_ncount,  \
    )(str)

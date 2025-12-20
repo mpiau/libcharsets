@@ -21,13 +21,40 @@ typedef char ascii;
 // API Functions
 //================================================================================================
 
-// Returns the number of characters in the given string, excluding '\0'.
+//------------------------------------------------------------------------------------------------
+// Single character functions
+//------------------------------------------------------------------------------------------------
+
+[[nodiscard]] bool ascii_is_valid(ascii c);
+
+[[nodiscard]] bool ascii_is_digit(ascii c);     // Decimal
+[[nodiscard]] bool ascii_is_digit_bin(ascii c); // Binary
+[[nodiscard]] bool ascii_is_digit_hex(ascii c); // Hexadecimal
+[[nodiscard]] bool ascii_is_digit_oct(ascii c); // Octal
+
+[[nodiscard]] bool ascii_is_lower(ascii c);
+[[nodiscard]] bool ascii_is_upper(ascii c);
+[[nodiscard]] bool ascii_is_alpha(ascii c);
+[[nodiscard]] bool ascii_is_alphanumeric(ascii c);
+[[nodiscard]] bool ascii_is_punctuation(ascii c);  // !"#$%&'()*+,\-./:;<=>?@\[\\\]^_`{|}~
+[[nodiscard]] bool ascii_is_graphical(ascii c);    // Punctuation or Alphanumeric
+[[nodiscard]] bool ascii_is_printable(ascii c);    // Graphical or space character
+[[nodiscard]] bool ascii_is_whitespace(ascii c);   // space or tab
+[[nodiscard]] bool ascii_is_horizontal_whitespace(ascii c);
+[[nodiscard]] bool ascii_is_control(ascii c);
+
+
+//------------------------------------------------------------------------------------------------
+// Character sequence functions
+//------------------------------------------------------------------------------------------------
+
 [[nodiscard]] __attribute__((nonnull (1)))
-size_t ascii_count(ascii const *str);
+bool ascii_seq_is_valid(ascii const *seq);
 
-// Returns the number of characters in the given string (up to max), excluding '\0'.
+// Returns the number of characters in the given sequence, excluding '\0'.
 [[nodiscard]] __attribute__((nonnull (1)))
-size_t ascii_ncount(ascii const *str, size_t max);
+size_t ascii_seq_count(ascii const *seq);
 
-
-// TODO
+// Returns the number of characters in the given sequence (up to max), excluding '\0'.
+[[nodiscard]] __attribute__((nonnull (1)))
+size_t ascii_seq_ncount(ascii const *seq, size_t max);
