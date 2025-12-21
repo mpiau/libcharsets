@@ -7,8 +7,6 @@
 // Type definitions
 //================================================================================================
 
-typedef bool(*characterCb)(ascii const c);
-
 struct AsciiName
 {
    ascii const *const name;
@@ -164,21 +162,6 @@ bool is_in_range(ascii const c, ascii const min, ascii const max)
    return !(c < min || c > max);
 }
 
-[[nodiscard]] static inline
-bool foreach_character_in_seq(ascii const *seq, characterCb const cb)
-{
-   while (*seq != '\0')
-   {
-      if (!cb(*seq))
-      {
-         return false;
-      }
-      seq += 1;
-   }
-
-   return true;
-}
-
 
 //================================================================================================
 // Public API Functions
@@ -317,7 +300,7 @@ AsciiComp ascii_compare(ascii const leftC, ascii const rightC)
 {
    switch (leftC - rightC)
    {
-      case SCHAR_MIN ... -1: return AsciiComp_LESS_THAN;  // left <  right
+      case SCHAR_MIN ... -1: return AsciiComp_LESS_THAN;    // left <  right
       case 0:                return AsciiComp_EQUAL;        // left == right
       case +1 ... SCHAR_MAX: return AsciiComp_GREATER_THAN; // left >  right 
 
@@ -351,94 +334,3 @@ ascii const *ascii_desc(ascii const c)
 {
    return ascii_is_valid(c) ? S_CHARACTERS[(size_t)c].desc : "Invalid";
 }
-
-//------------------------------------------------------------------------------------------------
-// Character sequence functions
-//------------------------------------------------------------------------------------------------
-
-bool ascii_seq_is_valid(ascii const *seq)
-{
-   return foreach_character_in_seq(seq, ascii_is_valid);
-}
-
-bool ascii_seq_is_number(ascii const *seq)
-{
-   bool const sign = ascii_is_number_sign(*seq);
-   return *(seq + sign) && foreach_character_in_seq(seq + sign, ascii_is_digit);
-}
-
-bool ascii_seq_is_number_bin(ascii const *seq)
-{
-   return *seq && foreach_character_in_seq(seq, ascii_is_digit_bin);
-}
-
-bool ascii_seq_is_number_hex(ascii const *seq)
-{
-   return *seq && foreach_character_in_seq(seq, ascii_is_digit_hex);
-}
-
-bool ascii_seq_is_number_oct(ascii const *seq)
-{
-   return *seq && foreach_character_in_seq(seq, ascii_is_digit_oct);
-}
-
-bool ascii_seq_is_number_float(ascii const *const seq)
-{
-   bool const sign = ascii_is_number_sign(*seq);
-   ascii const *it = (seq + sign);
-   ascii const *decimalIt = nullptr;
-
-   if (*it == '\0')
-   {
-      return false; // "" or "-" isn't a valid floating point number.
-   }
-
-   while (*it != '\0')
-   {
-      if (ascii_is_digit(*it))
-      {
-         it += 1;
-      }
-      else if (ascii_is_decimal_point(*it) && decimalIt == nullptr && it != (seq + sign))
-      {
-         // Ensures that we only encounter one dot in the whole number
-         // and that the dot isn't the first character
-         decimalIt = it++;
-      }
-      else
-      {
-         return false;
-      }
-   }
-
-   // Ensures that the potential decimal sign isn't the last character of the string.
-   return (decimalIt == nullptr) || (decimalIt + 1 != it);
-}
-
-
-size_t ascii_seq_count(ascii const *seq)
-{
-   ascii const *const begin = seq;
-
-   while (*seq != '\0')
-   {
-      seq += 1;
-   }
-
-   return seq - begin;
-}
-
-size_t ascii_seq_ncount(ascii const *seq, size_t const max)
-{
-   ascii const *const begin = seq;
-   ascii const *const end   = begin + max;
-
-   while (*seq != '\0' && seq < end)
-   {
-      seq += 1;
-   }
-
-   return seq - begin;
-}
-
-

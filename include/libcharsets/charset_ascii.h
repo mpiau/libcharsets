@@ -122,6 +122,21 @@ bool ascii_seq_is_number_float(ascii const *seq);
 
 
 //------------------------------------------------------------------------------------------------
+// Character sequence comparison functions
+//------------------------------------------------------------------------------------------------
+
+[[nodiscard]] __attribute__((nonnull(1, 2)))
+AsciiComp ascii_seq_compare(ascii const *lSeq, ascii const *rSeq);
+[[nodiscard]] __attribute__((nonnull(1, 2)))
+AsciiComp ascii_seq_compare_insensitive(ascii const *lSeq, ascii const *rSeq);
+
+[[nodiscard]] __attribute__((nonnull(1, 2)))
+bool ascii_seq_equals(ascii const *lSeq, ascii const *rSeq);
+[[nodiscard]] __attribute__((nonnull(1, 2)))
+bool ascii_seq_equals_insensitive(ascii const *lSeq, ascii const *rSeq);
+
+
+//------------------------------------------------------------------------------------------------
 // Character sequence size functions
 //------------------------------------------------------------------------------------------------
 
@@ -132,3 +147,8 @@ size_t ascii_seq_count(ascii const *seq);
 // Returns the number of characters in the given sequence (up to max), excluding '\0'.
 [[nodiscard]] __attribute__((nonnull(1)))
 size_t ascii_seq_ncount(ascii const *seq, size_t max);
+
+// Returns the number of bytes used in the given sequence, excluding '\0'.
+[[nodiscard]] __attribute__((nonnull(1)))
+size_t ascii_seq_bytesize(ascii const *seq);
+
