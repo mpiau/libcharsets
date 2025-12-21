@@ -203,11 +203,76 @@ void test_suite_ascii_characters_validity(void)
    }
 }
 
+void test_suite_ascii_seq_numbers()
+{
+   assert(ascii_seq_is_number("") == false);
+   assert(ascii_seq_is_number("-") == false);
+   assert(ascii_seq_is_number("+") == false);
+   assert(ascii_seq_is_number("a123") == false);
+   assert(ascii_seq_is_number("123a") == false);
+   assert(ascii_seq_is_number("123a456") == false);
+   assert(ascii_seq_is_number("123.456") == false);
+
+   assert(ascii_seq_is_number("123456") == true);
+   assert(ascii_seq_is_number("+123456") == true);
+   assert(ascii_seq_is_number("-123456") == true);
+   assert(ascii_seq_is_number("-1") == true);
+   assert(ascii_seq_is_number("+1") == true);
+}
+
+void test_suite_ascii_seq_numbers_hex()
+{
+   assert(ascii_seq_is_number_hex("") == false);
+   assert(ascii_seq_is_number_hex("-") == false);
+   assert(ascii_seq_is_number_hex("+") == false);
+   assert(ascii_seq_is_number_hex("123.456") == false);
+   assert(ascii_seq_is_number_hex("+123456") == false);
+   assert(ascii_seq_is_number_hex("-123456") == false);
+   assert(ascii_seq_is_number_hex("1G") == false);
+   assert(ascii_seq_is_number_hex("1m") == false);
+
+   assert(ascii_seq_is_number_hex("a") == true);
+   assert(ascii_seq_is_number_hex("ABC") == true);
+   assert(ascii_seq_is_number_hex("123a456") == true);
+   assert(ascii_seq_is_number_hex("ABCDEFabcdef") == true);
+}
+
+void test_suite_ascii_seq_numbers_fp()
+{
+   assert(ascii_seq_is_number_float("") == false);
+   assert(ascii_seq_is_number_float("+") == false);
+   assert(ascii_seq_is_number_float("-") == false);
+   assert(ascii_seq_is_number_float("-.3") == false);
+   assert(ascii_seq_is_number_float("+.3") == false);
+   assert(ascii_seq_is_number_float(".") == false);
+   assert(ascii_seq_is_number_float("3.") == false);
+   assert(ascii_seq_is_number_float("+-3") == false);
+   assert(ascii_seq_is_number_float("-+3") == false);
+   assert(ascii_seq_is_number_float("1.2.3") == false);
+   assert(ascii_seq_is_number_float("-123-2") == false);
+   assert(ascii_seq_is_number_float("-123a") == false);
+   assert(ascii_seq_is_number_float("-123.4a") == false);
+   assert(ascii_seq_is_number_float("a123.4") == false);
+
+   assert(ascii_seq_is_number_float("12345") == true);
+   assert(ascii_seq_is_number_float("1.2345") == true);
+   assert(ascii_seq_is_number_float("+12345") == true);
+   assert(ascii_seq_is_number_float("+12.345") == true);
+   assert(ascii_seq_is_number_float("-12345") == true);
+   assert(ascii_seq_is_number_float("-1234.5") == true);
+   assert(ascii_seq_is_number_float("-1.5") == true);
+   assert(ascii_seq_is_number_float("+1.5") == true);
+   assert(ascii_seq_is_number_float("1.5") == true);
+}
 
 int main()
 {
    test_suite_ascii_characters();
    test_suite_ascii_characters_validity();
+
+   test_suite_ascii_seq_numbers();
+   test_suite_ascii_seq_numbers_hex();
+   test_suite_ascii_seq_numbers_fp();
 
    assert(ascii_seq_count("") == 0);
    assert(ascii_seq_count("a") == 1);
