@@ -1,4 +1,4 @@
-#include "libcharsets/charset_ascii.h"
+#include "libcharsets/charset_utf8.h"
 #include "libcharsets/charsets.h"
 
 #include <assert.h>
@@ -298,6 +298,25 @@ int main()
    {
       printf("0x%02lx: %-3s (%s)\n", i, ascii_name(i), ascii_desc(i));
    }
+
+   assert(charset_bytesize("A"[0]) == 1);   // ASCII
+   assert(charset_bytesize(u8"A"[0]) == 1); // UTF-8
+
+   assert(charset_bytesize(u8"é"[0]) == 2);
+   assert(charset_bytesize(u8"ש"[0]) == 2);
+
+   assert(charset_bytesize(u8"€"[0]) == 3);
+   assert(charset_bytesize(u8"ユ"[0]) == 3);
+   assert(charset_bytesize(u8"ࠀ"[0]) == 3);
+   assert(charset_bytesize(u8"ࢨ"[0]) == 3);
+   assert(charset_bytesize(u8"ओ"[0]) == 3);
+   assert(charset_bytesize(u8"ᇂ"[0]) == 3);
+   assert(charset_bytesize(u8"Ω"[0]) == 3);
+
+   assert(charset_bytesize(u8"𝆕"[0]) == 4);
+   assert(charset_bytesize(u8"🁵"[0]) == 4);
+   assert(charset_bytesize(u8"😊"[0]) == 4);
+   assert(charset_bytesize(u8"💾"[0]) == 4);
 
    return 0;
 }

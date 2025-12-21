@@ -21,4 +21,7 @@ typedef char8_t utf8;
 // API Functions
 //================================================================================================
 
-// TODO
+// An UTF-8 character can take from 1 to 4 bytes in memory.
+// The function assumes that the given utf8 character is the correct leading byte.
+size_t utf8_bytesize(utf8 c);
+

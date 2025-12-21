@@ -325,6 +325,12 @@ bool ascii_equals_insensitive(ascii const leftC, ascii const rightC)
 }
 
 
+size_t ascii_bytesize(ascii const c)
+{
+   return (size_t)ascii_is_valid(c);
+}
+
+
 ascii const *ascii_name(ascii const c)
 {
    return ascii_is_valid(c) ? S_CHARACTERS[(size_t)c].name : "INV";

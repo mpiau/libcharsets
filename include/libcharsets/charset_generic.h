@@ -11,6 +11,13 @@
 // utf16 -> utf16_[...]
 
 
+#define charset_bytesize(c)   \
+   _Generic((c),              \
+      ascii: ascii_bytesize,  \
+       utf8: utf8_bytesize    \
+   )(c)
+
+
 #define charset_seq_count(str)          \
    _Generic((str),                      \
       ascii const *: ascii_seq_count,   \

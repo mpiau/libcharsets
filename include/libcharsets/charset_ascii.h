@@ -76,6 +76,15 @@ typedef enum AsciiComp AsciiComp;
 
 
 //------------------------------------------------------------------------------------------------
+// Single character size functions
+//------------------------------------------------------------------------------------------------
+
+// Returns the number of bytes taken by an ascii character (aka 1 if valid, 0 otherwise).
+// This function is useful to allow the usage of the generic charset_bytesize([...])
+[[nodiscard]] size_t ascii_bytesize(ascii c);
+
+
+//------------------------------------------------------------------------------------------------
 // Single character name functions
 //------------------------------------------------------------------------------------------------
 
@@ -151,4 +160,9 @@ size_t ascii_seq_ncount(ascii const *seq, size_t max);
 // Returns the number of bytes used in the given sequence, excluding '\0'.
 [[nodiscard]] __attribute__((nonnull(1)))
 size_t ascii_seq_bytesize(ascii const *seq);
+
+
+//------------------------------------------------------------------------------------------------
+// Character sequence search functions
+//------------------------------------------------------------------------------------------------
 
