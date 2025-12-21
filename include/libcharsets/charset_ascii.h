@@ -51,7 +51,7 @@ typedef enum AsciiComp AsciiComp;
 [[nodiscard]] bool ascii_is_blank(ascii c);        // space or tab
 [[nodiscard]] bool ascii_is_whitespace(ascii c);   // Blank or \f\n\r\v.
 [[nodiscard]] bool ascii_is_control(ascii c);
-[[nodiscard]] bool ascii_is_decimal_sign(ascii c); // '.' or ','
+[[nodiscard]] bool ascii_is_decimal_point(ascii c); // '.' or ','
 [[nodiscard]] bool ascii_is_number_sign(ascii c);  // '+' or '-'
 
 

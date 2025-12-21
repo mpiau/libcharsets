@@ -134,7 +134,7 @@ bool ascii_is_control(ascii const c)
    return is_in_range(c, '\0', '\x1F') || c == '\x7F'; // DEL
 }
 
-bool ascii_is_decimal_sign(ascii const c)
+bool ascii_is_decimal_point(ascii const c)
 {
    return c == '.' || c == ',';
 }
@@ -245,7 +245,7 @@ bool ascii_seq_is_number_float(ascii const *const seq)
       {
          it += 1;
       }
-      else if (ascii_is_decimal_sign(*it) && decimalIt == nullptr && it != (seq + sign))
+      else if (ascii_is_decimal_point(*it) && decimalIt == nullptr && it != (seq + sign))
       {
          // Ensures that we only encounter one dot in the whole number
          // and that the dot isn't the first character
