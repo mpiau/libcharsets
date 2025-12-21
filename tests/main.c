@@ -3,6 +3,7 @@
 
 #include <assert.h>
 #include <limits.h>
+#include <stdio.h>
 
 // Compile it manually for the moment.
 // gcc tests/main.c -Iinclude -L. -lcharsets -o test
@@ -243,9 +244,12 @@ void test_suite_ascii_seq_numbers_fp()
    assert(ascii_seq_is_number_float("+") == false);
    assert(ascii_seq_is_number_float("-") == false);
    assert(ascii_seq_is_number_float("-.3") == false);
+   assert(ascii_seq_is_number_float("-,3") == false);
    assert(ascii_seq_is_number_float("+.3") == false);
    assert(ascii_seq_is_number_float(".") == false);
+   assert(ascii_seq_is_number_float(",") == false);
    assert(ascii_seq_is_number_float("3.") == false);
+   assert(ascii_seq_is_number_float("3,") == false);
    assert(ascii_seq_is_number_float("+-3") == false);
    assert(ascii_seq_is_number_float("-+3") == false);
    assert(ascii_seq_is_number_float("1.2.3") == false);
@@ -253,6 +257,7 @@ void test_suite_ascii_seq_numbers_fp()
    assert(ascii_seq_is_number_float("-123a") == false);
    assert(ascii_seq_is_number_float("-123.4a") == false);
    assert(ascii_seq_is_number_float("a123.4") == false);
+   assert(ascii_seq_is_number_float("a1,23.4") == false);
 
    assert(ascii_seq_is_number_float("12345") == true);
    assert(ascii_seq_is_number_float("1.2345") == true);
@@ -263,6 +268,9 @@ void test_suite_ascii_seq_numbers_fp()
    assert(ascii_seq_is_number_float("-1.5") == true);
    assert(ascii_seq_is_number_float("+1.5") == true);
    assert(ascii_seq_is_number_float("1.5") == true);
+   assert(ascii_seq_is_number_float("-1,5") == true);
+   assert(ascii_seq_is_number_float("+1,5") == true);
+   assert(ascii_seq_is_number_float("1,5") == true);
 }
 
 int main()
@@ -285,6 +293,11 @@ int main()
    assert(ascii_seq_ncount("1234567890",  9) ==  9);
    assert(ascii_seq_ncount("1234567890", 10) == 10);
    assert(ascii_seq_ncount("1234567890", 11) == 10);
+
+   for (size_t i = 0; i < 128; ++i)
+   {
+      printf("0x%02lx: %-3s (%s)\n", i, ascii_name(i), ascii_desc(i));
+   }
 
    return 0;
 }

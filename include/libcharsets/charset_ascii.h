@@ -9,14 +9,9 @@
 
 typedef char ascii;
 
-
-//================================================================================================
-// Constants
-//================================================================================================
-
 enum AsciiComp : int
 {
-     AsciiComp_LESSER_THAN  = -1
+     AsciiComp_LESS_THAN    = -1
    , AsciiComp_EQUAL        =  0
    , AsciiComp_GREATER_THAN =  1
 };
@@ -52,7 +47,7 @@ typedef enum AsciiComp AsciiComp;
 [[nodiscard]] bool ascii_is_whitespace(ascii c);   // Blank or \f\n\r\v.
 [[nodiscard]] bool ascii_is_control(ascii c);
 [[nodiscard]] bool ascii_is_decimal_point(ascii c); // '.' or ','
-[[nodiscard]] bool ascii_is_number_sign(ascii c);  // '+' or '-'
+[[nodiscard]] bool ascii_is_number_sign(ascii c);   // '+' or '-'
 
 
 //------------------------------------------------------------------------------------------------
@@ -81,6 +76,19 @@ typedef enum AsciiComp AsciiComp;
 
 
 //------------------------------------------------------------------------------------------------
+// Single character name functions
+//------------------------------------------------------------------------------------------------
+
+// Returns a short name of the given character (like "~" or "A")
+// Returns "INV" if ascii invalid.
+[[nodiscard]] ascii const *ascii_name(ascii c);
+
+// Returns a descriptive name of the given character (like "Tilde" or "Uppercase Latin A")
+// Returns "Invalid" if ascii invalid.
+[[nodiscard]] ascii const *ascii_desc(ascii c);
+
+
+//------------------------------------------------------------------------------------------------
 // Character sequence validation functions
 //------------------------------------------------------------------------------------------------
 
@@ -88,7 +96,7 @@ typedef enum AsciiComp AsciiComp;
 [[nodiscard]] __attribute__((nonnull(1)))
 bool ascii_seq_is_valid(ascii const *seq);
 
-// Accounts for the optional '+'/'-' sign
+// Accounts for the optional sign
 // Returns true only if the whole sequence is a valid number.
 [[nodiscard]] __attribute__((nonnull(1)))
 bool ascii_seq_is_number(ascii const *seq);
@@ -105,10 +113,10 @@ bool ascii_seq_is_number_hex(ascii const *seq);
 [[nodiscard]] __attribute__((nonnull(1)))
 bool ascii_seq_is_number_oct(ascii const *seq);
 
-// Accounts for the optional '+'/'-' sign and a '.' somewhere
+// Accounts for the optional sign and a decimal point somewhere
 // Returns true only if the whole sequence is a valid number.
 // Note: "5." isn't considered valid. "5.0" is.
-// Note: ".5" isn't considered valid. "0.5" is.
+// Note: ",5" isn't considered valid. "0,5" is.
 [[nodiscard]] __attribute__((nonnull(1)))
 bool ascii_seq_is_number_float(ascii const *seq);
 
