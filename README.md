@@ -12,7 +12,7 @@ Work In Progress. The library is in very early stage of development and the enti
 
 # Documentation
 
-## Vocabulary  
+## Terminology  
 
 One of the earliest issues that can arise when developing a library/system is confusing the users due to inconsistent naming conventions. If we want to name things properly, the first step is to describe them.  
 
