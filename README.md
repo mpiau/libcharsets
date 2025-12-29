@@ -24,7 +24,7 @@ A glyph is basically the visual representation of a character. It's what you see
 
 <ins>**Allograph**</ins>  
 An allograph is using a glyph variant to represent the same character.  
-'*A*' and '**A**' or both allographs of 'A'.
+'*A*' and '**A**' are both allographs of 'A'.
 
 <ins>**Code point**</ins>  
 A code point is an unique identifier used to represent an entity.  
@@ -33,9 +33,9 @@ Each code point can have a different binary representation depending of the enco
 
 <ins>**Grapheme Cluster**</ins>  
 A sequence of one or more code points, treated as a single unit with a dedicated glyph. We could also say that a grapheme cluster is a character.
-Example: The irish flag "🇮🇪" is composed of 2 different code points :
+Example: The Irish flag "🇮🇪" is composed of 2 different code points :
 | Entity | Code point | Glyph |
-| --- | --- | --- |
+| :---: | :---: | :---: |
 |REGIONAL INDICATOR SYMBOL LETTER I | U+1F1EE | 🇮 |
 |REGIONAL INDICATOR SYMBOL LETTER E | U+1F1EA | 🇪 |
 
@@ -50,14 +50,17 @@ ASCII (American Standard Code for Information Interchange) is one of the earlies
 Easy to use and memory efficient, but lacks support for the other languages.  
 
 <ins>**UTF-8**</ins>  
-UTF-8 (Unicode Transformation Format - 8 bits) is a variable length encoding (from 1 to 4 bytes). Compatible with ASCII.
+UTF-8 (Unicode Transformation Format - 8 bits) is a variable length encoding (from 1 to 4 bytes).  
+Compatible with ASCII.
 
 <ins>**UTF-16**</ins>  
-UTF-16 (Unicode Transformation Format - 16 bits) is a variable length encoding (2 or 4 bytes). Working on non-latin datasets, UTF-16 could be more space efficient as it only uses 2 bytes to encode asian characters while 3 are needed for UTF-8.  
+UTF-16 (Unicode Transformation Format - 16 bits) is a variable length encoding (2 or 4 bytes).  
+Working on non-latin datasets, UTF-16 could be more space efficient as it only uses 2 bytes to encode asian characters while 3 are needed for UTF-8.  
 Often used on Windows as "Wide characters".
 
 <ins>**UTF-32**</ins>  
-UTF-32 (Unicode Transformation Format - 32 bits) uses a fixed 4 bytes of space to easily encode every code point. Because every 4 bytes equals one code point, it can makes text related operations easier and faster but consumes more memory (up to 4x than UTF-8).
+UTF-32 (Unicode Transformation Format - 32 bits) uses a fixed 4 bytes of space to easily encode every code point.  
+Because every 4 bytes equals one code point, it can makes text related operations easier and faster but consumes more memory (up to 4x than UTF-8).
 
 
 ## Libcharsets Types
