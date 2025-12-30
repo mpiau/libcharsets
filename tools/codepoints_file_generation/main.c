@@ -6,14 +6,17 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "codepoint_categories.h"
+
 static constexpr int32_t INVALID_CODEPOINT = INT32_MAX;
+
 
 struct CodePointLine
 {
    int32_t codeValue;
    char const *codeName;
    char const *oldCodeName; // Do we want to keep it ? Seems redundant for other code than controls.
-   char const *generalCategory;
+   CodePointCategory category;
    bool isMirrored;
    int32_t optAssociatedLowercase;
    int32_t optAssociatedUppercase;
@@ -48,7 +51,7 @@ static char *custom_strsep(char **const strPtr, const char sep)
    return (char *)tokenStart;
 }
 
-
+// Change the "SMALL TEXT TO SHOW THE ISSUE" into "Small Text To Show The Issue"
 static void update_case(char *const str)
 {
    char *it = str;
@@ -102,7 +105,7 @@ static int generate_codepoints(char const *const filepath)
 
       // Field  2: General Category
       token = custom_strsep(&lineIt, ';');
-      cp.generalCategory = token;
+      cp.category = codepoint_category_from_ascii(token);
 
       // Field  3: Canonical combining classes
       token = custom_strsep(&lineIt, ';');
@@ -134,7 +137,10 @@ static int generate_codepoints(char const *const filepath)
 
       // Field 10: Unicode 1.0 Name
       token = custom_strsep(&lineIt, ';');
-      if (token && *token != '\0')
+      // The oldname has some value for controls (that are all just <controls> now).
+      // However, keeping it for the rest of the list would just be confusing.
+      bool const isControl = (cp.category == CodePointCategory_OTHER_CONTROL);
+      if (isControl && token && *token != '\0')
       {
          update_case(token);
          if (strcmp(cp.codeName, token) != 0)
@@ -173,7 +179,10 @@ static int generate_codepoints(char const *const filepath)
       // ========= DISPLAY THE EXTRACTED VALUES ==========
 
 
-      printf("[%05lu]: 0x%04X [%s] %s", lineIdx, cp.codeValue, cp.generalCategory, cp.codeName);
+      printf( "[%05lu]: 0x%04X [%s] %s",
+         lineIdx, cp.codeValue, codepoint_category_desc(cp.category), cp.codeName
+      );
+
       if (cp.oldCodeName)
       {
          printf(" (%s)", cp.oldCodeName);
@@ -199,6 +208,8 @@ static int generate_codepoints(char const *const filepath)
       printf("\n");
 
       lineIdx += 1;
+
+      if (lineIdx > 1000) break;
    }
 
    fclose(fp);

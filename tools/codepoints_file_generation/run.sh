@@ -18,7 +18,7 @@ generate()
       mv $filename $localFilename
    fi
 
-   gcc main.c -I. -o generate_codepoints
+   gcc main.c codepoint_categories.c -I. -o generate_codepoints
    ./generate_codepoints $localFilename
 }
 
