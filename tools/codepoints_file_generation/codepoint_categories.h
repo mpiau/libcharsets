@@ -134,3 +134,7 @@ typedef enum CodePointCategory CodePointCategory;
 
 // Example: "Letter (lowercase)" for CodePointCategory_LETTER_LOWERCASE
 [[nodiscard]] ascii const * codepoint_category_desc(CodePointCategory category);
+
+// Useful for code generation.
+// Example: "CodePointCategory_LETTER_LOWERCASE" for CodePointCategory_LETTER_LOWERCASE
+[[nodiscard]] ascii const * codepoint_category_enum_name(CodePointCategory category);

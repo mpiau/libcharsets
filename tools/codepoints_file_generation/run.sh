@@ -30,8 +30,8 @@ run()
    download_unicode_datafile "Blocks"
 
    # Compile & Run
-   gcc main.c codepoint_categories.c -I. -o generate_codepoints
-   ./generate_codepoints "data/UnicodeData_17.0.0.txt"
+   gcc main.c codepoint_categories.c parse_codepoints.c parse_blocks.c utils.c -I. -o generate_codepoints
+   ./generate_codepoints "data/Blocks_17.0.0.txt" "data/UnicodeData_17.0.0.txt"
 }
 
 run

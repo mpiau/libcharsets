@@ -2,4 +2,5 @@
 
 #include "core.h"
 
-int parse_blocks(ascii const *const filepath);
+[[nodiscard]] int parse_blocks(ascii const *filepath);
+[[nodiscard]] int parse_codepoints(ascii const *filepath);

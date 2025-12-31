@@ -143,3 +143,55 @@ ascii const * codepoint_category_desc(CodePointCategory const category)
       ? S_CATEGORIES_INFO[category].desc
       : S_CATEGORIES_INFO[CodePointCategory_INVALID].desc;
 }
+
+ascii const * codepoint_category_enum_name(CodePointCategory const category)
+{
+#define CG_CASE_CAT(pCat)   \
+   case pCat: return #pCat
+
+   switch (category)
+   {
+      CG_CASE_CAT(CodePointCategory_INVALID);
+
+      CG_CASE_CAT(CodePointCategory_LETTER_LOWERCASE);
+      CG_CASE_CAT(CodePointCategory_LETTER_TITLECASE);
+      CG_CASE_CAT(CodePointCategory_LETTER_UPPERCASE);
+      CG_CASE_CAT(CodePointCategory_LETTER_MODIFIER);
+      CG_CASE_CAT(CodePointCategory_LETTER_OTHER);
+
+      CG_CASE_CAT(CodePointCategory_MARK_SPACING_COMBINING);
+      CG_CASE_CAT(CodePointCategory_MARK_ENCLOSING);
+      CG_CASE_CAT(CodePointCategory_MARK_NON_SPACING);
+
+      CG_CASE_CAT(CodePointCategory_NUMBER_DECIMAL_DIGIT);
+      CG_CASE_CAT(CodePointCategory_NUMBER_LETTER);
+      CG_CASE_CAT(CodePointCategory_NUMBER_OTHER);
+
+      CG_CASE_CAT(CodePointCategory_SEPARATOR_LINE);
+      CG_CASE_CAT(CodePointCategory_SEPARATOR_SPACE);
+      CG_CASE_CAT(CodePointCategory_SEPARATOR_PARAGRAPH);
+
+      CG_CASE_CAT(CodePointCategory_PUNCTUATION_CONNECTOR);
+      CG_CASE_CAT(CodePointCategory_PUNCTUATION_DASH);
+      CG_CASE_CAT(CodePointCategory_PUNCTUATION_OPEN);
+      CG_CASE_CAT(CodePointCategory_PUNCTUATION_CLOSE);
+      CG_CASE_CAT(CodePointCategory_PUNCTUATION_INITIAL_QUOTE);
+      CG_CASE_CAT(CodePointCategory_PUNCTUATION_FINAL_QUOTE);
+      CG_CASE_CAT(CodePointCategory_PUNCTUATION_OTHER);
+
+      CG_CASE_CAT(CodePointCategory_SYMBOL_MATH);
+      CG_CASE_CAT(CodePointCategory_SYMBOL_CURRENCY);
+      CG_CASE_CAT(CodePointCategory_SYMBOL_MODIFIER);
+      CG_CASE_CAT(CodePointCategory_SYMBOL_OTHER);
+
+      CG_CASE_CAT(CodePointCategory_OTHER_CONTROL);
+      CG_CASE_CAT(CodePointCategory_OTHER_FORMAT);
+      CG_CASE_CAT(CodePointCategory_OTHER_NOT_ASSIGNED);
+      CG_CASE_CAT(CodePointCategory_OTHER_PRIVATE_USE);
+      CG_CASE_CAT(CodePointCategory_OTHER_SURROGATE);
+
+      default: return "CodePointCategory_INVALID";
+   }
+
+#undef CG_CASE_CAT
+}
