@@ -1,11 +1,7 @@
 #pragma once
 
-#include "macro_indexed_enum.h"
+#include "core.h"
 
-// TODO: This is Temporary code, will be defined that somewhere else in the future.
-#include <stdint.h>
-typedef int32_t codepoint;
-typedef char ascii;
 
 enum CodePointCategory
 {

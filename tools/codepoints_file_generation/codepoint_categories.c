@@ -108,8 +108,6 @@ static constexpr CategoryInfo S_CATEGORIES_INFO[] =
 #undef CG_CAT_INFO
 };
 
-#define sizeofA(array) (sizeof(array) / sizeof(*array))
-
 static_assert( sizeofA(S_CATEGORIES_INFO) == CodePointCategory_Count);
 
 

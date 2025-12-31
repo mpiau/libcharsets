@@ -8,10 +8,9 @@
 
 #include "codepoint_categories.h"
 
-static constexpr int32_t INVALID_CODEPOINT = INT32_MAX;
+static constexpr codepoint INVALID_CODEPOINT = INT32_MAX;
 
-
-struct CodePointLine
+struct CodePointInfo
 {
    int32_t codeValue;
    char const *codeName;
@@ -23,7 +22,9 @@ struct CodePointLine
    int32_t optAssociatedTitlecase;
 };
 
-typedef struct CodePointLine CodePointLine;
+typedef struct CodePointInfo CodePointInfo;
+
+static CodePointInfo s_cpsInfo[0xFFFF] = {};
 
 // Implementing my own strsep because it strtok doesn't support empty fields
 // and it seems that strsep doesn't exist for me. However I used a char instead of
@@ -67,6 +68,41 @@ static void update_case(char *const str)
    }
 }
 
+static void print_codepoint_info(FILE *fp, CodePointInfo const *const cp)
+{
+   static size_t lineCount = 0;
+
+   fprintf(fp, "[%05lu]: 0x%04X [%s] %s",
+      lineCount, cp->codeValue, codepoint_category_desc(cp->category), cp->codeName
+   );
+
+   if (cp->oldCodeName)
+   {
+      fprintf(fp, " (%s)", cp->oldCodeName);
+   }
+
+   if (cp->isMirrored)
+   {
+      fprintf(fp, " <Mirrored>");
+   }
+
+   if (cp->optAssociatedLowercase != INVALID_CODEPOINT)
+   {
+      fprintf(fp, " [Lower: 0x%04X]", cp->optAssociatedLowercase);
+   }
+   if (cp->optAssociatedUppercase != INVALID_CODEPOINT)
+   {
+      fprintf(fp, " [Upper: 0x%04X]", cp->optAssociatedUppercase);
+   }
+   if (cp->optAssociatedTitlecase != INVALID_CODEPOINT)
+   {
+      fprintf(fp, " [Title: 0x%04X]", cp->optAssociatedTitlecase);
+   }
+   fprintf(fp, "\n");
+
+   lineCount += 1;
+}
+
 static int generate_codepoints(char const *const filepath)
 {
    FILE *fp = fopen(filepath, "r");
@@ -76,36 +112,61 @@ static int generate_codepoints(char const *const filepath)
       return EXIT_FAILURE;
    }
 
+   char const *const filepathDest = "./generated/output.txt";
+   FILE *fpDest = fopen(filepathDest, "w");
+   if (fpDest == nullptr)
+   {
+      fprintf(stderr, "FATAL: Failure to create the destination file [%s]\n", filepathDest);
+      return EXIT_FAILURE;
+   }
+
+   for (size_t idx = 0; idx < 0xFFFF; ++idx)
+   {
+      s_cpsInfo[idx] = (CodePointInfo) {
+         .codeValue = idx,
+         .codeName = nullptr,
+         .oldCodeName = nullptr,
+         .category = CodePointCategory_INVALID,
+         .isMirrored = false,
+         .optAssociatedLowercase = INVALID_CODEPOINT,
+         .optAssociatedTitlecase = INVALID_CODEPOINT,
+         .optAssociatedUppercase = INVALID_CODEPOINT
+      };
+   }
+
    ssize_t readCount = 0;
    size_t lineLength = 0;
    char *line = nullptr;
 
-   size_t lineIdx = 0;
+   bool lastWasRangeFirst = false;
+   codepoint rangeFirstCodePoint = INVALID_CODEPOINT;
+
    while ((readCount = getline(&line, &lineLength, fp)) != -1)
    {
       char *lineIt = line;
 
       lineIt[readCount - 1] = '\0'; // Remove '/n' at the end of the line.
 
-      CodePointLine cp = {};
-
       // Field 0: Code value.
       char *token = custom_strsep(&lineIt, ';');
-      cp.codeValue = (int32_t)strtol(token, nullptr, 16); // Hexadecimal
+      codepoint const codeValue = (int32_t)strtol(token, nullptr, 16); // Hexadecimal
 
       // We only want to support the first Unicode plane (Basic Multilingual Plane)
       // Range if from U+0000 to U+FFFF
-      if (cp.codeValue > 0xFFFF)
+      if (codeValue > 0xFFFF)
          break;
+
+      CodePointInfo *const cp = &s_cpsInfo[codeValue];
+      assert(cp->codeValue == codeValue);
 
       // Field  1: Character Name.
       token = custom_strsep(&lineIt, ';');
       update_case(token);
-      cp.codeName = token;
+      cp->codeName = token;
 
       // Field  2: General Category
       token = custom_strsep(&lineIt, ';');
-      cp.category = codepoint_category_from_ascii(token);
+      cp->category = codepoint_category_from_ascii(token);
 
       // Field  3: Canonical combining classes
       token = custom_strsep(&lineIt, ';');
@@ -133,23 +194,19 @@ static int generate_codepoints(char const *const filepath)
 
       // Field  9: Mirrored
       token = custom_strsep(&lineIt, ';');
-      cp.isMirrored = strcmp(token, "Y") == 0 ? true : false;
+      cp->isMirrored = strcmp(token, "Y") == 0 ? true : false;
 
       // Field 10: Unicode 1.0 Name
       token = custom_strsep(&lineIt, ';');
       // The oldname has some value for controls (that are all just <controls> now).
       // However, keeping it for the rest of the list would just be confusing.
-      bool const isControl = (cp.category == CodePointCategory_OTHER_CONTROL);
+      bool const isControl = (cp->category == CodePointCategory_OTHER_CONTROL);
       if (isControl && token && *token != '\0')
       {
          update_case(token);
-         if (strcmp(cp.codeName, token) != 0)
+         if (strcmp(cp->codeName, token) != 0)
          {
-            cp.oldCodeName = token;
-         }
-         else
-         {
-            cp.oldCodeName = nullptr;
+            cp->oldCodeName = token;
          }
       }
 
@@ -159,59 +216,63 @@ static int generate_codepoints(char const *const filepath)
 
       // Field 12: Uppercase mapping (if exist: hex codepoint, else empty)
       token = custom_strsep(&lineIt, ';');
-      cp.optAssociatedUppercase = (token && *token != '\0')
-         ? (int32_t)strtol(token, nullptr, 16)
-         : INVALID_CODEPOINT;
+      if (token && *token != '\0')
+      {
+         cp->optAssociatedUppercase = (int32_t)strtol(token, nullptr, 16);
+      }
 
       // Field 13: Lowercase mapping (if exist : hex codepoint, else empty)
       token = custom_strsep(&lineIt, ';');
-      cp.optAssociatedLowercase = (token && *token != '\0')
-         ? (int32_t)strtol(token, nullptr, 16)
-         : INVALID_CODEPOINT;
+      if (token && *token != '\0')
+      {
+         cp->optAssociatedLowercase = (int32_t)strtol(token, nullptr, 16);
+      }
 
       // Field 14: Titlecase mapping (if exist: hex codepoint, else empty)
       token = custom_strsep(&lineIt, ';');
-      cp.optAssociatedTitlecase = (token && *token != '\0')
-         ? (int32_t)strtol(token, nullptr, 16)
-         : INVALID_CODEPOINT;
-
-
-      // ========= DISPLAY THE EXTRACTED VALUES ==========
-
-
-      printf( "[%05lu]: 0x%04X [%s] %s",
-         lineIdx, cp.codeValue, codepoint_category_desc(cp.category), cp.codeName
-      );
-
-      if (cp.oldCodeName)
+      if (token && *token != '\0')
       {
-         printf(" (%s)", cp.oldCodeName);
+         cp->optAssociatedTitlecase = (int32_t)strtol(token, nullptr, 16);
       }
 
-      if (cp.isMirrored)
-      {
-         printf(" <Mirrored>");
-      }
+      // ========= HANDLE RANGES ============
+      // Seems like there are also some ranges inside UnicodeData.txt file.
+      // There are not under X..Y form but the following:
+      // "[...];<CJK Ideograph, First>;[...]"
+      // "[...];<CJK Ideograph, Last>;[...]"
 
-      if (cp.optAssociatedLowercase != INVALID_CODEPOINT)
+      if (lastWasRangeFirst)
       {
-         printf(" [Lower: 0x%04X]", cp.optAssociatedLowercase);
-      }
-      if (cp.optAssociatedUppercase != INVALID_CODEPOINT)
-      {
-         printf(" [Upper: 0x%04X]", cp.optAssociatedUppercase);
-      }
-      if (cp.optAssociatedTitlecase != INVALID_CODEPOINT)
-      {
-         printf(" [Title: 0x%04X]", cp.optAssociatedTitlecase);
-      }
-      printf("\n");
+         assert(strstr(cp->codeName, ", Last>") != nullptr);
 
-      lineIdx += 1;
+         cp->codeName = cp->codeName + 1; // Remove first "<"
+         *(strstr(cp->codeName, ",")) = '\0'; // Remove everything starting from ','
 
-      if (lineIdx > 1000) break;
+         for (codepoint cpRange = rangeFirstCodePoint; cpRange <= cp->codeValue; ++cpRange)
+         {
+            CodePointInfo *cpInRange = &s_cpsInfo[cpRange];
+            memcpy(cpInRange, cp, sizeof(*cp));
+            cpInRange->codeValue = cpRange;
+            char *finalName = malloc(strlen(cp->codeName) + 8);
+            sprintf(finalName, "%s-%04X", cp->codeName, cpInRange->codeValue);
+            cpInRange->codeName = finalName;
+            print_codepoint_info(fpDest, cpInRange);
+         }
+         lastWasRangeFirst = false;
+      }
+      else if (strstr(cp->codeName, ", First>"))
+      {
+         lastWasRangeFirst = true;
+         rangeFirstCodePoint = cp->codeValue;
+         // Don't print the codepoint here, wait for the ", Last>" being parsed first.
+      }
+      else
+      {
+         print_codepoint_info(fpDest, cp);
+      }
    }
 
+   fclose(fpDest);
    fclose(fp);
    return EXIT_SUCCESS;
 }

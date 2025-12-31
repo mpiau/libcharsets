@@ -1,2 +1,3 @@
-UnicodeData_*
+data/
+generated/
 generate_codepoints
