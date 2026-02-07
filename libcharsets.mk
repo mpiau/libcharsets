@@ -1,0 +1,12 @@
+ifndef LIBCHARSETS_INCLUDE
+LIBCHARSETS_INCLUDE := 1
+
+
+LIBCHARSETS_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+
+CFLAGS  += -I$(LIBCHARSETS_DIR)include
+LDFLAGS += -L$(LIBCHARSETS_DIR)
+LDLIBS  += -lcharsets
+
+
+endif

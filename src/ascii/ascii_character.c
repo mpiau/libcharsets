@@ -19,7 +19,7 @@ static inline bool is_in_range(byte const c, byte const min, byte const max)
 // Validation functions
 //------------------------------------------------------------------------------------------------
 
-bool ascii_is_valid(byte const b)
+bool ascii_validate(byte const b)
 {
    return is_in_range(b, 0x00, 0x7F);
 }

@@ -10,6 +10,6 @@
 // And in the archive bind them;
 // In libcharsets where the symbols lie.
 
-#include "ascii/ascii_character.h"
-#include "ascii/ascii_string.h"
-#include "charset_types.h"
+#include "libcharsets/charset_ascii.h"
+#include "libcharsets/charset_common.h"
+#include "libcharsets/charset_unicode.h"

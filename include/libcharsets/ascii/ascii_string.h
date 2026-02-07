@@ -1,6 +1,6 @@
 #pragma once
 
-#include "libcharsets/charset_types.h"
+#include "libcharsets/ascii/ascii_types.h"
 
 
 //================================================================================================
@@ -11,6 +11,6 @@
 // Validation functions
 //------------------------------------------------------------------------------------------------
 
-[[nodiscard]] bool ascii_str_is_valid(byte const *);
+[[nodiscard]] bool ascii_str_validate(byte const *);
 
 
