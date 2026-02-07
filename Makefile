@@ -71,7 +71,7 @@ CFLAGS += -Wall -Wextra																\
     	  	 -Wjump-misses-init -Wlogical-op -fPIC
 
 # Include directories
-CFLAGS += -Iinclude -Isrc/include 
+CFLAGS += -Iinclude -Isrc/include
 
 # flags required for dependency generation; passed to compilers
 DEPFLAGS = -MT $@ -MD -MP -MF $(DEPS_DIR)/$*.Td
