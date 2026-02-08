@@ -1,5 +1,9 @@
 #include "libcharsets/unicode/unicode_codepoint.h"
+#include "libcharsets/unicode/unicode_utf8.h"
 
+
+#include <stdio.h>
+#include <stdint.h>
 
 static constexpr codepoint CODEPOINT_MAX_VALUE = 0x10FFFF;
 
@@ -61,4 +65,36 @@ bool codepoint_into_utf8(codepoint const cp, utf8 out[static 5])
 
    out[idx] = '\0';
    return true;
+}
+
+// Return the number of bytes read to generate the next codepoint.
+unsigned codepoint_from_utf8(utf8 const *str, codepoint *out)
+{
+   *out = 0;
+
+   unsigned const size = utf8_next_character_size(str);
+   if (size == 1u)
+   {
+      *out += (codepoint)str[0];
+   }
+   else if (size == 2u)
+   {
+      *out += (codepoint)(str[0] & 0b0001'1111) << 6;
+      *out += (codepoint)(str[1] & 0b0011'1111);
+   }
+   else if (size == 3u)
+   {
+      *out += (codepoint)(str[0] & 0b0000'1111) << 12;
+      *out += (codepoint)(str[1] & 0b0011'1111) <<  6;
+      *out += (codepoint)(str[2] & 0b0011'1111);
+   }
+   else if (size == 4u)
+   {
+      *out += (codepoint)(str[0] & 0b0000'0111) << 18;
+      *out += (codepoint)(str[1] & 0b0011'1111) << 12;
+      *out += (codepoint)(str[2] & 0b0011'1111) <<  6;
+      *out += (codepoint)(str[3] & 0b0011'1111);
+   }
+
+   return size;
 }
